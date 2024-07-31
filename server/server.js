@@ -13,6 +13,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: authMiddleware,
+  persistedQueries: {
+    cache: new InMemoryLRUCache({ maxSize: 1000 }),
+  },
 });
 
 server.start().then(res => {
@@ -27,7 +30,7 @@ server.start().then(res => {
 
   db.once('open', () => {
     app.listen(PORT, () => {
-      console.log(`🌍 Now listening on http://localhost:${PORT}`);
+      console.log(`Now listening on http://localhost:${PORT}`);
       console.log(`GraphQL endpoint: http://localhost:${PORT}${server.graphqlPath}`);
     });
   });
