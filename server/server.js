@@ -13,9 +13,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: authMiddleware,
-  persistedQueries: {
-    cache: new InMemoryLRUCache({ maxSize: 1000 }),
-  },
+  persistedQueries: false,
 });
 
 server.start().then(res => {
