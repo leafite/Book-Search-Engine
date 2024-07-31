@@ -1,7 +1,7 @@
-// server.js
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
+require('dotenv').config();
 const db = require('./config/connection');
 const { typeDefs, resolvers } = require('./schema');
 const { authMiddleware } = require('./utils/auth');
@@ -16,7 +16,7 @@ const server = new ApolloServer({
   persistedQueries: false,
 });
 
-server.start().then(res => {
+server.start().then(() => {
   server.applyMiddleware({ app });
 
   app.use(express.urlencoded({ extended: true }));
@@ -25,6 +25,10 @@ server.start().then(res => {
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/build')));
   }
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
 
   db.once('open', () => {
     app.listen(PORT, () => {
